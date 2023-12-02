@@ -10,7 +10,7 @@ from passlib.hash import bcrypt
 from fastapi.middleware.cors import CORSMiddleware
 from databases import Database
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session, joinedload, lazyload 
 import sqlalchemy
 
 app = FastAPI()
@@ -57,7 +57,7 @@ async def login(
     password = credentials.password
     user = (
         db.query(User)
-        .options(joinedload(User.chat_logs))
+        .options(lazyload(User.chat_logs))  # lazyload を使用して関連データの遅延ロードを有効にする
         .filter(User.email == email)
         .first()
     )
