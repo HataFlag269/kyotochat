@@ -20,7 +20,7 @@ class User(Base):
     birthday = Column(DateTime)
     gender = Column(String)
     age = Column(Integer)
-    chat_logs = relationship("ChatLog", back_populates="user", lazy="selectin")
+    chat_logs = relationship("ChatLog", back_populates="user", lazy="joined")
 
     def verify_password(self, password: str):
         return bcrypt.verify(password, self.password)
@@ -29,7 +29,7 @@ class Character(Base):
     __tablename__ = "characters"
     character_id = Column(Integer, primary_key=True, index=True)
     character_name = Column(String)
-    chat_logs = relationship("ChatLog", back_populates="character", lazy="selectin")
+    chat_logs = relationship("ChatLog", back_populates="character", lazy="joined")
 
 class ChatLog(Base):
     __tablename__ = "chat_logs"
@@ -39,8 +39,8 @@ class ChatLog(Base):
     message = Column(Text)
     send_datetime = Column(DateTime)
 
-    user = relationship("User", back_populates="chat_logs")
-    character = relationship("Character", back_populates="chat_logs")
+    user = relationship("User", back_populates="chat_logs", lazy="joined")
+    character = relationship("Character", back_populates="chat_logs", lazy="joined")
 
 class UserCredentials(BaseModel):
     email: str

@@ -35,7 +35,6 @@ def get_db():
     finally:
         db.close()
 
-
 @app.get("/")
 async def root():
     return await app.handle(request=request)
@@ -44,7 +43,6 @@ async def root():
 @app.get("/a")
 async def a():
     return {"aaa"}
-
 
 @app.post("/login")
 async def login(
@@ -57,7 +55,7 @@ async def login(
     password = credentials.password
     user = (
         db.query(User)
-        .options(lazyload(User.chat_logs))  # lazyload を使用して関連データの遅延ロードを有効にする
+        .options(joinedload(User.chat_logs))
         .filter(User.email == email)
         .first()
     )
@@ -67,3 +65,4 @@ async def login(
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials"
     )
+
